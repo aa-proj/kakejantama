@@ -27,8 +27,8 @@ guild_target = discord.Object(id=606109479003750440)
 
 
 #コマンドで順位ごとに点棒を入力
-@tree.command(name='jantama4', description='四麻のポイントを計算', guild=guild_target)
-async def jantama4(interaction: discord.Interaction, no1:int, no2:int, no3:int, no4:int):
+@tree.command(name='jantama', description='麻雀のポイントを計算', guild=guild_target)
+async def jantama(interaction: discord.Interaction, no1:int, no2:int, no3:int, no4:int = None):
     #1位がもらえるポイント
     No1Points = (no1 - 25000) / 100
     #2位がもらえるポイント
@@ -37,6 +37,21 @@ async def jantama4(interaction: discord.Interaction, no1:int, no2:int, no3:int, 
     No3Points = (no3 - 25000) / 100 
     #4位がもらえるポイント
     No4Points = (no4 - 25000) / 100 
+
+    if no4 is None:
+        if not no1 + no2 + no3 == 35000*3:
+            await interaction.response.send_message(f"たぶん点数がおかしいにゃ!")
+            return
+        if not no1 >= no2 >= no3:
+            await interaction.response.send_message(f"点数と順位が一致しないにゃ!")
+            return
+        if no2 < 35000:
+            await interaction.response.send_message(f"【1位{no1}点,2位{no2}点,3位{no3}点】\n3位の人は{-No3Points}P、2位の人は{-No2Points}Pを1位に支払うにゃ!")
+            return
+        else:
+            await interaction.response.send_message(f"【1位{no1}点,2位{no2}点,3位{no3}点】\n3位の人は、2位の人に{No2Points}P、1位の人に{No1Points}P支払うにゃ!")
+            return
+
     
     if not no1 + no2 + no3 + no4 == 25000*4:
         await interaction.response.send_message(f"たぶん点数がおかしいにゃ!")
